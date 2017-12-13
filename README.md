@@ -1,12 +1,14 @@
 # Algoritmo-CYK
 
-##Desarrollo del algoritmo de Cocke-Younger-Kasami (CYK) utilizando Java y su interfaz gráfica.
+## Desarrollo del algoritmo de Cocke-Younger-Kasami (CYK) utilizando Java y su interfaz gráfica.
 
-   #@autor Juan Carlos Ruiz García
+Desarrollado por **Juan Carlos Ruiz García**
+
+> Github: @juanka1995
 
 ############################################################################################
 
-##Depencendias:
+## Depencendias:
   - JDK 1.8
   - GTK 2.0 (o superior)
         
