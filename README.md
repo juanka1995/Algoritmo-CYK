@@ -5,7 +5,7 @@ Desarrollo del algoritmo de **Cocke-Younger-Kasami (CYK)** utilizando Java y su 
 Autor: **Juan Carlos Ruiz García**
 
 ## Depencendias:
-  - JDK 1.8
+  - JDK 1.8 (o superior)
   - GTK 2.0 (o superior)        
 
 ## Ejecución:
