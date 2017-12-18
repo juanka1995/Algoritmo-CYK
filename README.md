@@ -12,5 +12,5 @@ Autor: **Juan Carlos Ruiz García**
   ```
   $ git clone ...
   $ cd Algoritmo-CYK/
-  $ java -jar CYK.jar
+  $ java -jar dist/CYK.jar
   ```
