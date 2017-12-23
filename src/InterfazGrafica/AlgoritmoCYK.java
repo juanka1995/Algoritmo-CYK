@@ -28,13 +28,18 @@ import javax.swing.table.DefaultTableModel;
  */
 public class AlgoritmoCYK extends javax.swing.JFrame {
     InsertarGramatica insertarGR;
+    MyRender miRender;
     Gramatica miGramatica = new Gramatica();
     DefaultTableModel dtm = new DefaultTableModel();
     ArrayList<ArrayList<String>> miMatriz = new ArrayList<>();
     ArrayList<ArrayList<ArrayList<String>>> vectorMatrices = new ArrayList<>();
+    ArrayList<ArrayList<Integer>> matrizIndices  = new ArrayList<>();
     String palabra = new String();
     boolean pertenece;
     int indiceVectorMatrices;
+    int i1, j1;
+    int i2, j2;
+    int ires, jres;
     
     
     /**
@@ -53,6 +58,8 @@ public class AlgoritmoCYK extends javax.swing.JFrame {
         jLpertenece.setVisible(false);
         jTFpalabra.requestFocus();
         insertarGR = insertarGram;
+        jTable.setRowSelectionAllowed(false);
+        jTable.setColumnSelectionAllowed(false);
     }
     
     public void inicializarTabla(){
@@ -272,13 +279,14 @@ public class AlgoritmoCYK extends javax.swing.JFrame {
 
             }
         ));
+        jTable.setDropMode(javax.swing.DropMode.INSERT_ROWS);
         jScrollPane1.setViewportView(jTable);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -296,7 +304,7 @@ public class AlgoritmoCYK extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(51, Short.MAX_VALUE)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -353,7 +361,7 @@ public class AlgoritmoCYK extends javax.swing.JFrame {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
@@ -377,6 +385,10 @@ public class AlgoritmoCYK extends javax.swing.JFrame {
             // Obtenemos la palabra
             palabra = jTFpalabra.getText();
             
+            // Color tabla
+            miRender = new MyRender(palabra);
+            jTable.setDefaultRenderer(Object.class, miRender);
+            
             // Limpiamos la tabla
             limpiarTabla();
             
@@ -384,13 +396,29 @@ public class AlgoritmoCYK extends javax.swing.JFrame {
             miMatriz.clear();
             inicializarMatriz(miMatriz, palabra);
             vectorMatrices.clear();
-            pertenece = algoritmoCYK_IG(miMatriz, palabra,miGramatica,vectorMatrices);
+            matrizIndices.clear();
+            pertenece = algoritmoCYK_IG(miMatriz, palabra,miGramatica,vectorMatrices,matrizIndices);
             inicializarTabla();
                        
             mostrarMatrizTabla(vectorMatrices.get(indiceVectorMatrices));
+            
+            setIndicesToRender(0);
         }
     }//GEN-LAST:event_jBacceptActionPerformed
 
+    private void setIndicesToRender(int i){
+        i1 = matrizIndices.get(i).get(0);
+        j1 = matrizIndices.get(i).get(1);
+
+        i2 = matrizIndices.get(i).get(2);
+        j2 = matrizIndices.get(i).get(3);
+
+        ires = matrizIndices.get(i).get(4);
+        jres = matrizIndices.get(i).get(5);
+        
+        miRender.setIndices(i1,j1,i2,j2,ires,jres);
+    }
+    
     private void jBclearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBclearActionPerformed
         limpiarTabla();
         pertenece = false;
@@ -406,6 +434,8 @@ public class AlgoritmoCYK extends javax.swing.JFrame {
         if(indiceVectorMatrices < vectorMatrices.size()){
             indiceVectorMatrices++;
             mostrarMatrizTabla(vectorMatrices.get(indiceVectorMatrices));
+            setIndicesToRender(indiceVectorMatrices);
+            jTable.repaint();
             jBpreviousStep.setEnabled(true);
             if(indiceVectorMatrices == vectorMatrices.size()-1){
                 jBnextStep.setEnabled(false);
@@ -427,6 +457,8 @@ public class AlgoritmoCYK extends javax.swing.JFrame {
         if(indiceVectorMatrices > 0){
             indiceVectorMatrices--;
             mostrarMatrizTabla(vectorMatrices.get(indiceVectorMatrices));
+            setIndicesToRender(indiceVectorMatrices);
+            jTable.repaint();
             jBnextStep.setEnabled(true);
             if(indiceVectorMatrices == 0){
                 jBpreviousStep.setEnabled(false);
@@ -440,6 +472,7 @@ public class AlgoritmoCYK extends javax.swing.JFrame {
         jBnextStep.setEnabled(false);
         jBpreviousStep.setEnabled(true);
         mostrarMatrizTabla(vectorMatrices.get(indiceVectorMatrices));
+        setIndicesToRender(indiceVectorMatrices);
         if(pertenece){
             jLpertenece.setText("La palabra " +palabra+ " SI PUEDE ser generada por la grámatica.");
             jLpertenece.setForeground(new Color(37,135,2));
